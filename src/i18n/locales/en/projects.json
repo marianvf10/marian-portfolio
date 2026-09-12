@@ -1,0 +1,136 @@
+{
+  "workshop-management-system": {
+    "name": "Workshop Management System",
+    "summary": "A management platform for a mechanical workshop that handles both private and corporate vehicles, replacing paper-based repair records with a centralized digital system.",
+    "problem": {
+      "heading": "The problem",
+      "body": "The workshop tracked vehicles, repair history and pricing on paper, making it slow to look up past work, inconsistent to quote repairs, and hard to see how the business was performing. The goal was to replace that process with a single, centralized digital platform."
+    },
+    "architecture": {
+      "heading": "Architecture",
+      "body": "A decoupled architecture with a Vue 3 single-page application (Vue Router for navigation, Vuetify for the UI layer) consuming a REST API built with LoopBack 4, which centralizes vehicle records, repair history and pricing rules in the database."
+    },
+    "features": {
+      "heading": "Key features",
+      "items": [
+        "Vehicle management for both private and corporate clients",
+        "Full repair history per vehicle",
+        "Dashboard with workshop indicators",
+        "Estimated pricing by repair category",
+        "Estimated pricing by vehicle brand",
+        "Editable pricing tables for the workshop staff"
+      ]
+    },
+    "challenges": {
+      "heading": "Challenges",
+      "body": "The main challenge was designing a flexible pricing scheme: the workshop needed to estimate a repair's cost by combining the job category with the vehicle's brand, with tables the staff themselves could edit without touching code. That led to modeling pricing as configurable rules in the database instead of fixed values, and to clearly separating private vehicle data from corporate data, which has different tracking needs."
+    },
+    "lessonsLearned": {
+      "heading": "Lessons learned",
+      "body": "This project reinforced the value of anticipating which parts of a system change often — like pricing — and designing them as configurable data from the start instead of hardcoding them. It also confirmed my interest in backend work: correctly modeling the relationships between vehicles, repairs and pricing ended up mattering more to the system's success than the interface itself."
+    },
+    "screenshots": [
+      "Dashboard with workshop indicators",
+      "Form for creating a new repair for a private vehicle",
+      "List of repairs for private vehicles",
+      "Form for creating a new repair for a company vehicle",
+      "List of repairs for company vehicles",
+      "List of vehicle brands",
+      "List of private vehicles",
+      "List of company vehicles"
+    ]
+  },
+  "claims-management-platform": {
+    "name": "Claims Management Platform",
+    "summary": "A management platform for an insurance expert-appraisal firm that processes school-accident and auto-accident claims end to end, including a secure, passwordless portal for claimants and third parties to submit their own data and documentation.",
+    "problem": {
+      "heading": "The problem",
+      "body": "The firm processed claims referred by insurers and institutions using scattered paperwork and phone or messaging exchanges to collect evidence from claimants and third parties, making it slow to track a case from intake to final report and hard to prove who submitted what and when. The goal was to centralize case management for both claim types while giving outside parties a way to contribute evidence without creating a user account for someone who would only ever submit a single case."
+    },
+    "architecture": {
+      "heading": "Architecture",
+      "body": "A decoupled architecture with a Vue 3 single-page application (Pinia for state, TanStack Query for data fetching) consuming a REST API built with NestJS and TypeORM over MySQL, where each business domain — claims, files, users, insurers — is an independent module with its own controllers, services and DTOs. A separate, unauthenticated public intake channel, protected by single-use tokenized links instead of user accounts, lets claimants and third parties submit data and documents directly into the same database, with its own rate limiting, file validation and audit logging."
+    },
+    "features": {
+      "heading": "Key features",
+      "items": [
+        "Case management for school-accident and auto-accident claims, from intake to final report",
+        "Inspector assignment by geographic zone",
+        "Secure, passwordless portal where claimants and third parties fill out their own data and upload documents through a tokenized link, no account required",
+        "AI-assisted extraction of data from handwritten claim forms and accident reports, auto-filling structured fields with an automatic fallback model on rate limits",
+        "Automatic generation of Word reports and payment agreements",
+        "Role-based access control for admins and inspectors, with JWT stored in HTTP-only cookies",
+        "Audit log of every public submission — payload, IP and user agent — for evidentiary traceability"
+      ]
+    },
+    "challenges": {
+      "heading": "Challenges",
+      "body": "The hardest problem wasn't case management itself but the public intake channel: exposing an unauthenticated endpoint that lets outside parties write data into the system without turning it into an open door. Access uses single-use UUIDv4 tokens instead of sequential IDs to prevent enumeration, the backend filters what each party can see so a third party can never read the claimant's account of events (and vice versa), and the guard that resolves the token responds with 404 or 410 instead of 401 so a stale or already-used link doesn't accidentally trigger the authenticated app's session-refresh flow. Uploaded files are validated by their magic bytes rather than the declared MIME type, and every submission is written straight to the domain entity plus an append-only audit log — favoring operational simplicity over a manual review queue while still preserving who submitted what, from where, and when."
+    },
+    "lessonsLearned": {
+      "heading": "Lessons learned",
+      "body": "Modeling adversarial parties correctly turned out to matter as much as the CRUD around them: giving each third party their own token and their own set of columns for their account of events, kept fully separate from the claimant's, was as important to getting the domain right as any single feature. It was also a reminder that security for an unauthenticated public channel has to be designed deliberately from day one — token scheme, response codes, file validation — rather than added on top once the authenticated part of the app already works."
+    },
+    "screenshots": [
+      "Login screen",
+      "List of school-accident claims",
+      "List of auto-accident claims",
+      "New claim intake with AI-assisted data extraction",
+      "AI-assisted data extraction for the third party's vehicle",
+      "Auto-accident claim detail: identification data",
+      "Auto-accident claim detail: third-party data",
+      "Auto-accident claim detail: investigation",
+      "Auto-accident claim detail: file uploads",
+      "School-accident claim detail",
+      "School-accident claim documentation checklist",
+      "Public intake portal: step 1, claimant data",
+      "Public intake portal: step 2, documentation"
+    ]
+  },
+  "insurance-appraisal-platform": {
+    "name": "Insurance Appraisal Platform",
+    "summary": "A management platform for an insurance expert-appraisal firm that handles two distinct claim types — workplace-accident claims and vehicle appraisal claims — with AI-assisted document extraction, an anti-fraud checklist and automated deadline alerts.",
+    "problem": {
+      "heading": "The problem",
+      "body": "The firm receives cases referred by insurers and workers'-compensation providers across two lines of business with different deadlines, documentation and legal criteria. Tracking both from spreadsheets made it easy to miss a case approaching its statutory deadline and left report writing as a fully manual, error-prone step. The goal was a single platform that could handle both lines without forcing one into the other's data model, while helping inspectors flag potential fraud and never miss a deadline."
+    },
+    "architecture": {
+      "heading": "Architecture",
+      "body": "A decoupled architecture with a Vue 3 single-page application (Pinia, TanStack Query) consuming a REST API built with NestJS and TypeORM over MySQL. The two claim types are modeled as independent modules: workplace-accident claims have a rich sub-graph of entities — worker, employer, commute route, injury, witness statements — while vehicle appraisal claims mirror insured and third-party data side by side; both share common building blocks for files, users and document generation. Scheduled jobs run independently of user activity to keep cases in both lines on track. The frontend's visual foundation (components, layout, palette) deliberately reuses what I built for the Claims Management Platform: both are appraisal-firm systems with nearly identical interface needs, so reusing that UI left more time for backend design, which is where the real engineering work in these projects lives and where I enjoy working most."
+    },
+    "features": {
+      "heading": "Key features",
+      "items": [
+        "Case management for two insurance lines: workplace-accident claims and vehicle appraisal claims",
+        "AI-assisted extraction of structured data from claim PDFs, with a different prompt per claim type",
+        "Anti-fraud checklist and structured statements — accident victim, employer, witness — for workplace-accident reports",
+        "Automated deadline alerts: a scheduled job checks open cases every few hours and emails admins and the assigned inspector before a case is overdue",
+        "Automatic generation of PDF cover sheets and Word reports, plus Excel exports filtered by insurer and date range",
+        "Role-based access control for admins and inspectors, with JWT and refresh tokens"
+      ]
+    },
+    "challenges": {
+      "heading": "Challenges",
+      "body": "Fitting two genuinely different claim types into one platform without forcing a shared shape onto them was the main design problem: instead of one generic case entity, each line got its own module and entity graph, sharing only what was actually common, such as files, users and document builders. Keeping the deadline-alert job reliable was a smaller but easy-to-get-wrong problem — without a flag recording that an alert had already been sent, a job running every few hours would have re-notified admins on every run, so each alert type is tracked explicitly to fire exactly once per case."
+    },
+    "lessonsLearned": {
+      "heading": "Lessons learned",
+      "body": "Resisting the urge to unify two different domains under one generic entity paid off: workplace-accident and vehicle claims genuinely don't share a shape, and forcing them into a single table would have meant nullable columns everywhere and business logic full of type checks. It was also a good lesson in treating scheduled jobs as a first-class part of the design — idempotency has to be planned for from the start, not patched in after the first duplicate-alert complaint."
+    },
+    "screenshots": [
+      "Login screen",
+      "List of workplace-accident claims (ART)",
+      "Workplace-accident claim detail",
+      "Workplace-accident claim detail: report and conclusions",
+      "Workplace-accident claim detail: documentation and photos",
+      "Anti-fraud checklist",
+      "Notifying the assigned inspector",
+      "New claim intake with AI-assisted data extraction",
+      "List of vehicle appraisal claims",
+      "Vehicle appraisal claim detail",
+      "Insurer management",
+      "User management",
+      "Dark mode"
+    ]
+  }
+}

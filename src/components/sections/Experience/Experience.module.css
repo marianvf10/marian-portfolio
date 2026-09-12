@@ -1,0 +1,39 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.item {
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--color-border);
+}
+
+.itemHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.role {
+  font-size: var(--font-size-md);
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+.company {
+  color: var(--color-accent);
+}
+
+.period {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+.description {
+  margin-top: var(--space-2);
+  max-width: 65ch;
+}

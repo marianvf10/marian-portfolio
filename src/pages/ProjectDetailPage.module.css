@@ -1,0 +1,79 @@
+.page {
+  padding-block: var(--space-7) var(--space-9);
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.back:hover {
+  color: var(--color-accent);
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+}
+
+.summary {
+  margin-top: var(--space-3);
+  max-width: 65ch;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.image {
+  margin-top: var(--space-7);
+}
+
+.block {
+  margin-top: var(--space-7);
+}
+
+.blockHeading {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-3);
+}
+
+.blockBody {
+  max-width: 65ch;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 65ch;
+}
+
+.featureList li {
+  padding-left: var(--space-5);
+  position: relative;
+}
+
+.featureList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}

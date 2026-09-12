@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "eyebrow": "Hi, my name is",
+    "tagline": "I build backend systems that power real products.",
+    "description": "I design REST APIs, model databases, and take applications to production on real Linux servers. I care about understanding how a system works underneath, not just making it run, and I'm looking for projects where I can keep going deeper into backend and systems architecture.",
+    "ctaPrimary": "View my work",
+    "ctaSecondary": "Get in touch"
+  },
+  "about": {
+    "heading": "About me",
+    "paragraphs": [
+      "I'm a Full Stack developer with a backend focus, experienced in taking web applications from initial analysis and design through to production deployment and maintenance. I started out as an intern building an application to modernize the nursing department of a hospital, and today I work on enterprise web systems, involved in the full cycle: analysis, design, implementation, testing and deployment.",
+      "My main interest is backend development and understanding the architecture that holds a system together: designing REST APIs, modeling relational databases and administering Linux servers in production. Without leaving frontend behind, I'm currently adding React to my stack to broaden that experience. I tend to work methodically — diagnosing a problem step by step before acting — and I'm genuinely curious about the why behind a technical decision, not just the how."
+    ]
+  },
+  "experience": {
+    "heading": "Experience",
+    "items": [
+      {
+        "role": "Full Stack Developer",
+        "company": "Sofisticapp",
+        "period": "January 2024 — Present",
+        "description": "I take part in the full development cycle of enterprise web systems: analysis, design, implementation, testing and deployment, both on new projects and on extending existing systems. I build REST APIs with Node.js, LoopBack 4 and NestJS, implement authentication with JWT and OAuth 2.0 (Auth0), build interfaces with Vue 3 and Vuetify, model relational databases (MySQL, PostgreSQL), and deploy and maintain applications in production on DigitalOcean."
+      },
+      {
+        "role": "Full Stack Developer (Internship)",
+        "company": "Policlínico Modelo de Cipolletti",
+        "period": "June 2023 — December 2023",
+        "description": "End-to-end backend and frontend development to modernize the hospital's nursing department, replacing manual paper-based processes with a web application."
+      },
+      {
+        "role": "Backend Developer (University Scholarship)",
+        "company": "Poder Judicial de Neuquén",
+        "period": "First half of 2023",
+        "description": "Backend endpoint development with Spring Boot 3 as part of a university professional-practice scholarship."
+      }
+    ]
+  },
+  "skills": {
+    "heading": "Skills",
+    "categories": {
+      "languages": "Languages",
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "databases": "Databases",
+      "infrastructure": "Infrastructure"
+    }
+  },
+  "projectsSection": {
+    "heading": "Featured Projects",
+    "subtitle": "A selection of projects I've designed, built and maintained."
+  },
+  "education": {
+    "heading": "Education",
+    "items": [
+      {
+        "degree": "Analista Programador Universitario (University Programmer Analyst)",
+        "institution": "Universidad Nacional del Comahue",
+        "period": "2018 — 2025"
+      }
+    ]
+  },
+  "certifications": {
+    "heading": "Certifications"
+  },
+  "contact": {
+    "heading": "Contact",
+    "subtitle": "Have a project in mind or an opportunity to share? Let's talk.",
+    "emailLabel": "Email"
+  }
+}

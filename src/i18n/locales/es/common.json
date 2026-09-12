@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "about": "Sobre mí",
+    "experience": "Experiencia",
+    "skills": "Habilidades",
+    "projects": "Proyectos",
+    "education": "Educación",
+    "contact": "Contacto"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "Inglés",
+    "es": "Español"
+  },
+  "theme": {
+    "toggleToLight": "Cambiar a tema claro",
+    "toggleToDark": "Cambiar a tema oscuro"
+  },
+  "skipToContent": "Saltar al contenido",
+  "buttons": {
+    "downloadCv": "Descargar CV",
+    "viewCaseStudy": "Ver caso de estudio",
+    "backHome": "Volver al inicio",
+    "contactMe": "Contactame",
+    "visitGithub": "Perfil de GitHub",
+    "visitLinkedin": "Perfil de LinkedIn",
+    "sendEmail": "Enviar un correo",
+    "liveDemo": "Demo en vivo",
+    "sourceCode": "Código fuente",
+    "backToTop": "Volver arriba"
+  },
+  "carousel": {
+    "previous": "Imagen anterior",
+    "next": "Imagen siguiente",
+    "goTo": "Ir a la imagen {{position}}",
+    "counter": "{{current}} de {{total}}"
+  },
+  "footer": {
+    "rights": "© {{year}} Mariano Vergara. Todos los derechos reservados."
+  },
+  "meta": {
+    "defaultDescription": "Mariano Vergara — desarrollador de software orientado a backend, especializado en NestJS, LoopBack 4 y aplicaciones web full-stack."
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscás no existe o fue movida.",
+    "cta": "Volver al inicio"
+  },
+  "whatsapp": {
+    "ariaLabel": "Chatear por WhatsApp",
+    "message": "Hola Mariano, vi tu portfolio y quería contactarte."
+  }
+}

@@ -1,0 +1,7 @@
+Drop your real CV PDFs here with these exact filenames (referenced by src/config/site.ts):
+
+  CV-Mariano-Vergara-EN.pdf
+  CV-Mariano-Vergara-ES.pdf
+
+Until both files exist, the "Download CV" button in the Contact section will 404.
+Delete this file once the real PDFs are in place.

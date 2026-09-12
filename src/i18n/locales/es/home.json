@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "eyebrow": "Hola, mi nombre es",
+    "tagline": "Desarrollador Full Stack con enfoque en backend, capaz de llevar un proyecto solo de punta a punta.",
+    "description": "Desde analizar requerimientos y diseñar el modelo de datos, hasta construir la API, la interfaz y desplegar en producción. Me interesa entender cómo funciona un sistema por dentro, no solo hacerlo andar, y busco proyectos donde pueda seguir profundizando en backend y arquitectura de sistemas.",
+    "ctaPrimary": "Ver mi trabajo",
+    "ctaSecondary": "Contactame"
+  },
+  "about": {
+    "heading": "Sobre mí",
+    "paragraphs": [
+      "Soy desarrollador Full Stack con foco en backend, con experiencia llevando aplicaciones web desde el análisis y diseño inicial hasta el despliegue y mantenimiento en producción. Empecé como pasante desarrollando una aplicación para modernizar el sector de enfermería de un policlínico, y hoy trabajo en el desarrollo de sistemas web empresariales, participando del ciclo completo: análisis, diseño, implementación, pruebas y despliegue.",
+      "Mi interés principal está en el backend y en entender la arquitectura que sostiene un sistema: diseño de APIs REST, modelado de bases de datos relacionales y administración de servidores Linux en producción. Sin dejar el frontend de lado, estoy incorporando React a mi stack para ampliar esa experiencia. Me caracteriza un enfoque metódico —diagnostico un problema de forma progresiva antes de actuar— y una curiosidad genuina por el porqué de cada decisión técnica, no solo por el cómo."
+    ]
+  },
+  "experience": {
+    "heading": "Experiencia",
+    "items": [
+      {
+        "role": "Desarrollador Full Stack",
+        "company": "Sofisticapp",
+        "period": "Enero 2024 — Presente",
+        "description": "Participo del ciclo completo de desarrollo de sistemas web empresariales: análisis, diseño, implementación, pruebas y despliegue, tanto en proyectos nuevos como en la extensión de sistemas existentes. Desarrollo APIs REST con Node.js, LoopBack 4 y NestJS, implemento autenticación con JWT y OAuth 2.0 (Auth0), construyo interfaces con Vue 3 y Vuetify, modelo bases de datos relacionales (MySQL, PostgreSQL) y despliego y mantengo las aplicaciones en producción sobre DigitalOcean."
+      },
+      {
+        "role": "Desarrollador Full Stack (Pasantía)",
+        "company": "Policlínico Modelo de Cipolletti",
+        "period": "Junio 2023 — Diciembre 2023",
+        "description": "Desarrollo end-to-end de backend y frontend para modernizar el sector de enfermería del policlínico, reemplazando procesos manuales en papel por una aplicación web."
+      },
+      {
+        "role": "Desarrollador Backend (Beca PPU)",
+        "company": "Poder Judicial de Neuquén",
+        "period": "Primer semestre de 2023",
+        "description": "Desarrollo de endpoints backend con Spring Boot 3 en el marco de una beca de práctica profesional universitaria."
+      }
+    ]
+  },
+  "skills": {
+    "heading": "Habilidades",
+    "categories": {
+      "languages": "Lenguajes",
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "databases": "Bases de datos",
+      "infrastructure": "Infraestructura"
+    }
+  },
+  "projectsSection": {
+    "heading": "Proyectos Destacados",
+    "subtitle": "Una selección de proyectos que diseñé, construí y mantengo."
+  },
+  "education": {
+    "heading": "Educación",
+    "items": [
+      {
+        "degree": "Analista Programador Universitario",
+        "institution": "Universidad Nacional del Comahue",
+        "period": "2018 — 2025"
+      }
+    ]
+  },
+  "certifications": {
+    "heading": "Certificaciones"
+  },
+  "contact": {
+    "heading": "Contacto",
+    "subtitle": "¿Tenés un proyecto en mente o una oportunidad para compartir? Hablemos.",
+    "emailLabel": "Correo"
+  }
+}

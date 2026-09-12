@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (function () {
+        var stored = window.localStorage.getItem('portfolio-theme');
+        document.documentElement.dataset.theme = stored === 'light' ? 'light' : 'dark';
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a10" />
+    <title>Mariano Vergara — Backend-oriented Software Developer</title>
+    <meta
+      name="description"
+      content="Mariano Vergara — backend-oriented software developer specializing in NestJS, LoopBack 4 and full-stack web applications."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mariano Vergara" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

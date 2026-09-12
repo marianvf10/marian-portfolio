@@ -1,0 +1,20 @@
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  display: inline-flex;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.link:hover {
+  color: var(--color-accent);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}

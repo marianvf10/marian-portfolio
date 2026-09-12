@@ -1,0 +1,28 @@
+.button {
+  position: fixed;
+  right: var(--space-5);
+  bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-floating);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: #25d366;
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.button:hover {
+  background: #1ebc59;
+  transform: translateY(-2px);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: #fff;
+}

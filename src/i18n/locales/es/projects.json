@@ -1,0 +1,136 @@
+{
+  "workshop-management-system": {
+    "name": "Sistema de Gestión de Taller",
+    "summary": "Una plataforma de gestión para un taller mecánico que administra vehículos particulares y corporativos, reemplazando las fichas de reparación en papel por un sistema digital centralizado.",
+    "problem": {
+      "heading": "El problema",
+      "body": "El taller registraba vehículos, historial de reparaciones y precios en papel, lo que hacía lento consultar trabajos anteriores, inconsistente presupuestar reparaciones y difícil ver el rendimiento del negocio. El objetivo fue reemplazar ese proceso por una plataforma digital centralizada."
+    },
+    "architecture": {
+      "heading": "Arquitectura",
+      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Vue Router para la navegación, Vuetify como capa de UI) que consume una API REST construida con LoopBack 4, que centraliza los registros de vehículos, el historial de reparaciones y las reglas de precios en la base de datos."
+    },
+    "features": {
+      "heading": "Funcionalidades principales",
+      "items": [
+        "Gestión de vehículos particulares y corporativos",
+        "Historial completo de reparaciones por vehículo",
+        "Dashboard con indicadores del taller",
+        "Precios estimados por categoría de reparación",
+        "Precios estimados por marca de vehículo",
+        "Tablas de precios editables para el personal del taller"
+      ]
+    },
+    "challenges": {
+      "heading": "Desafíos",
+      "body": "El desafío principal fue diseñar un esquema de precios flexible: el taller necesitaba estimar el costo de una reparación combinando la categoría del trabajo y la marca del vehículo, con tablas que el propio personal pudiera editar sin tocar código. Esto llevó a modelar los precios como reglas configurables en la base de datos en lugar de valores fijos, y a separar claramente los datos de vehículos particulares de los corporativos, que tienen necesidades de seguimiento distintas."
+    },
+    "lessonsLearned": {
+      "heading": "Aprendizajes",
+      "body": "Este proyecto reforzó la importancia de anticipar qué partes de un sistema van a cambiar con frecuencia —como los precios— y diseñarlas como datos configurables desde el principio en lugar de hardcodearlas. También confirmó mi interés por el backend: modelar correctamente las relaciones entre vehículos, reparaciones y precios terminó siendo más determinante para el éxito del sistema que la interfaz en sí."
+    },
+    "screenshots": [
+      "Dashboard con indicadores del taller",
+      "Formulario de alta de un nuevo arreglo para vehículo particular",
+      "Listado de arreglos de vehículos particulares",
+      "Formulario de alta de un nuevo arreglo para vehículo de empresa",
+      "Listado de arreglos de vehículos de empresas",
+      "Listado de marcas de vehículos",
+      "Listado de vehículos particulares",
+      "Listado de vehículos de empresas"
+    ]
+  },
+  "claims-management-platform": {
+    "name": "Plataforma de Gestión de Siniestros",
+    "summary": "Una plataforma de gestión para un estudio de peritajes de seguros que procesa siniestros escolares y automovilísticos de punta a punta, incluyendo un portal seguro y sin necesidad de cuenta para que los damnificados y terceros carguen sus propios datos y documentación.",
+    "problem": {
+      "heading": "El problema",
+      "body": "El estudio procesaba siniestros derivados por aseguradoras e instituciones usando papeles dispersos e intercambios por teléfono o mensajería para recolectar evidencia de damnificados y terceros, lo que hacía lento seguir un caso desde su ingreso hasta el informe final y difícil comprobar quién había enviado qué y cuándo. El objetivo fue centralizar la gestión de casos para ambos tipos de siniestro, dando a la vez a las partes externas una forma de aportar evidencia sin crear una cuenta de usuario para alguien que solo va a cargar un único caso."
+    },
+    "architecture": {
+      "heading": "Arquitectura",
+      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Pinia para el estado, TanStack Query para el fetching de datos) que consume una API REST construida con NestJS y TypeORM sobre MySQL, donde cada dominio de negocio —siniestros, archivos, usuarios, aseguradoras— es un módulo independiente con sus propios controllers, services y DTOs. Un canal de carga pública separado y sin autenticación, protegido por enlaces con token de un solo uso en lugar de cuentas de usuario, permite que damnificados y terceros carguen datos y documentos directamente en la misma base de datos, con su propio rate limiting, validación de archivos y auditoría."
+    },
+    "features": {
+      "heading": "Funcionalidades principales",
+      "items": [
+        "Gestión de casos de siniestros escolares y automovilísticos, desde el ingreso hasta el informe final",
+        "Asignación de inspectores por zona geográfica",
+        "Portal seguro sin cuenta de usuario, donde damnificados y terceros completan sus propios datos y suben documentación mediante un enlace con token",
+        "Extracción de datos asistida por IA desde actas manuscritas y denuncias de siniestro, autocompletando campos estructurados con un modelo de respaldo automático ante límites de uso",
+        "Generación automática de informes en Word y convenios de pago",
+        "Control de acceso por rol para administradores e inspectores, con JWT almacenado en cookies HTTP-only",
+        "Registro de auditoría de cada envío público —payload, IP y user agent— para sostener la trazabilidad probatoria"
+      ]
+    },
+    "challenges": {
+      "heading": "Desafíos",
+      "body": "El problema más difícil no fue la gestión de casos en sí, sino el canal de carga pública: exponer un endpoint sin autenticación que permite a partes externas escribir datos en el sistema sin convertirlo en una puerta abierta. El acceso usa tokens UUIDv4 de un solo uso en lugar de IDs secuenciales para evitar enumeración, el backend filtra qué puede ver cada parte para que un tercero nunca pueda leer el relato del damnificado (y viceversa), y el guard que resuelve el token responde 404 o 410 en lugar de 401 para que un enlace vencido o ya usado no dispare accidentalmente el flujo de refresh de sesión de la app autenticada. Los archivos subidos se validan por sus magic bytes en lugar del MIME type declarado, y cada envío se escribe directamente en la entidad de dominio más un log de auditoría de solo escritura —priorizando la simplicidad operativa por sobre una cola de revisión manual sin perder la capacidad de reconstruir quién envió qué, desde dónde y cuándo."
+    },
+    "lessonsLearned": {
+      "heading": "Aprendizajes",
+      "body": "Modelar correctamente a las partes adversariales resultó ser tan importante como el CRUD alrededor de ellas: darle a cada tercero su propio token y sus propias columnas para su relato de los hechos, completamente separadas de las del damnificado, fue tan clave para el dominio como cualquier funcionalidad puntual. También fue un recordatorio de que la seguridad de un canal público sin autenticación tiene que diseñarse deliberadamente desde el día uno —esquema de tokens, códigos de respuesta, validación de archivos— y no agregarse después de que la parte autenticada de la app ya funciona."
+    },
+    "screenshots": [
+      "Pantalla de inicio de sesión",
+      "Listado de siniestros escolares",
+      "Listado de siniestros automovilísticos",
+      "Alta de siniestro con extracción de datos asistida por IA",
+      "Extracción de datos asistida por IA para el vehículo de terceros",
+      "Detalle de siniestro automovilístico: datos de identificación",
+      "Detalle de siniestro automovilístico: datos de terceros",
+      "Detalle de siniestro automovilístico: investigación",
+      "Detalle de siniestro automovilístico: carga de archivos",
+      "Detalle de acta de siniestro escolar",
+      "Checklist de documentación del acta escolar",
+      "Portal público de carga: paso 1, datos del damnificado",
+      "Portal público de carga: paso 2, documentación"
+    ]
+  },
+  "insurance-appraisal-platform": {
+    "name": "Plataforma de Peritajes de Seguros",
+    "summary": "Una plataforma de gestión para un estudio de peritajes de seguros que maneja dos tipos de siniestro distintos —siniestros laborales y pericias mecánicas vehiculares— con extracción de documentos asistida por IA, un checklist antifraude y alertas automáticas de vencimiento.",
+    "problem": {
+      "heading": "El problema",
+      "body": "El estudio recibe casos derivados por aseguradoras y ART en dos líneas de negocio con plazos, documentación y criterios legales distintos. Hacer seguimiento de ambas desde planillas hacía fácil perder de vista un caso próximo a su vencimiento legal, y dejaba la redacción de informes como un paso totalmente manual y propenso a errores. El objetivo fue una única plataforma capaz de manejar ambas líneas sin forzar una dentro del modelo de datos de la otra, ayudando además a los inspectores a detectar posible fraude y a no perder ningún vencimiento."
+    },
+    "architecture": {
+      "heading": "Arquitectura",
+      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Pinia, TanStack Query) que consume una API REST construida con NestJS y TypeORM sobre MySQL. Los dos tipos de siniestro se modelan como módulos independientes: los siniestros laborales tienen un grafo de entidades más rico —trabajador, empleador, ruta in itinere, lesión, relatos de testigos— mientras que las pericias mecánicas reflejan en espejo los datos del asegurado y del tercero; ambos comparten bloques comunes para archivos, usuarios y generación de documentos. Tareas programadas corren de forma independiente a la actividad de los usuarios para mantener al día los casos de ambas líneas. La base visual del frontend (componentes, layout, paleta) es deliberadamente la misma que usé en la Plataforma de Gestión de Siniestros: son dos estudios de peritajes con necesidades de interfaz casi idénticas, así que reutilizar esa UI dejó más tiempo para el diseño del backend, que es donde está el trabajo de ingeniería real de estos proyectos y donde más disfruto trabajar."
+    },
+    "features": {
+      "heading": "Funcionalidades principales",
+      "items": [
+        "Gestión de casos para dos líneas de seguros: siniestros laborales y pericias mecánicas vehiculares",
+        "Extracción de datos estructurados asistida por IA desde los PDF de denuncia, con un prompt distinto para cada tipo de siniestro",
+        "Checklist antifraude y relatos estructurados —accidentado, empleador, testigo— para los informes de siniestros laborales",
+        "Alertas automáticas de vencimiento: una tarea programada revisa los casos abiertos cada pocas horas y notifica por mail a administradores e inspector asignado antes de que un caso venza",
+        "Generación automática de carátulas en PDF e informes en Word, además de exportación a Excel filtrada por aseguradora y rango de fechas",
+        "Control de acceso por rol para administradores e inspectores, con JWT y refresh tokens"
+      ]
+    },
+    "challenges": {
+      "heading": "Desafíos",
+      "body": "Encajar dos tipos de siniestro genuinamente distintos en una sola plataforma sin forzarlos a compartir una forma común fue el principal problema de diseño: en lugar de una entidad de caso genérica, cada línea tiene su propio módulo y su propio grafo de entidades, compartiendo solo lo que realmente era común, como archivos, usuarios y generadores de documentos. Mantener confiable la tarea de alertas de vencimiento fue un problema menor pero fácil de resolver mal: sin un flag que registrara que una alerta ya había sido enviada, una tarea que corre cada pocas horas habría vuelto a notificar a los administradores en cada ejecución, por lo que cada tipo de alerta se rastrea explícitamente para dispararse una única vez por caso."
+    },
+    "lessonsLearned": {
+      "heading": "Aprendizajes",
+      "body": "Resistir la tentación de unificar dos dominios distintos bajo una entidad genérica valió la pena: los siniestros laborales y los vehiculares genuinamente no comparten una forma, y forzarlos en una sola tabla hubiera significado columnas nullable por todos lados y lógica de negocio llena de chequeos de tipo. También fue un buen aprendizaje sobre tratar a las tareas programadas como una parte de primera clase del diseño: la idempotencia hay que planificarla desde el principio, no parchearla después del primer reclamo por una alerta duplicada."
+    },
+    "screenshots": [
+      "Pantalla de inicio de sesión",
+      "Listado de siniestros laborales (ART)",
+      "Detalle de siniestro laboral",
+      "Detalle de siniestro laboral: informe y conclusiones",
+      "Detalle de siniestro laboral: documentación y fotos",
+      "Checklist antifraude",
+      "Notificación al inspector asignado",
+      "Alta de siniestro con extracción de datos asistida por IA",
+      "Listado de pericias mecánicas vehiculares",
+      "Detalle de pericia mecánica vehicular",
+      "Gestión de aseguradoras",
+      "Gestión de usuarios",
+      "Modo oscuro"
+    ]
+  }
+}
