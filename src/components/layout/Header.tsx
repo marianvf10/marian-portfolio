@@ -28,6 +28,23 @@ export function Header() {
     void i18n.changeLanguage(lng);
   }
 
+  // Closing the mobile panel's exit animation interrupts the browser's native anchor
+  // scroll if both happen in the same tick, so the scroll is deferred a frame and driven
+  // manually here instead of relying on the <a href="#id"> default navigation.
+  function handleMobileNavClick(event: React.MouseEvent<HTMLAnchorElement>, id: string) {
+    setMobileOpen(false);
+    if (!isHome) return;
+
+    event.preventDefault();
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        document.getElementById(id)?.scrollIntoView({ behavior, block: 'start' });
+        window.history.replaceState(null, '', `#${id}`);
+      });
+    });
+  }
+
   return (
     <header className={styles.header}>
       <div className={`container ${styles.inner}`}>
@@ -117,7 +134,11 @@ export function Header() {
             <ul className={styles.mobileNavList}>
               {navItems.map((item) => (
                 <li key={item.id}>
-                  <a href={item.href} className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>
+                  <a
+                    href={item.href}
+                    className={styles.mobileNavLink}
+                    onClick={(event) => handleMobileNavClick(event, item.id)}
+                  >
                     {item.label}
                   </a>
                 </li>
