@@ -2,7 +2,7 @@
 // TODO: replace the placeholder domain/GitHub/LinkedIn with your real ones before deploying.
 export const siteConfig = {
   name: 'Mariano Vergara',
-  email: 'mariano.vergara@est.fi.uncoma.edu.ar',
+  email: 'marianovf19@outlook.com',
   domain: 'https://marianovergara.dev', // TODO: replace with the real deployed domain
   github: 'https://github.com/TODO-your-github-username',
   linkedin: 'https://www.linkedin.com/in/marianovf/',

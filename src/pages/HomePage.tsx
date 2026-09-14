@@ -27,7 +27,7 @@ export function HomePage() {
   return (
     <>
       <Seo
-        title={`${siteConfig.name} — ${t('home:hero.tagline')}`}
+        title={`${siteConfig.name} — ${t('common:meta.role')}`}
         description={t('common:meta.defaultDescription')}
         path="/"
         jsonLd={personJsonLd}

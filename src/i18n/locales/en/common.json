@@ -39,7 +39,8 @@
     "rights": "© {{year}} Mariano Vergara. All rights reserved."
   },
   "meta": {
-    "defaultDescription": "Mariano Vergara — backend-oriented software developer specializing in NestJS, LoopBack 4 and full-stack web applications."
+    "role": "Fullstack Developer",
+    "defaultDescription": "Mariano Vergara — software developer who designs and builds complete web applications, from the systems behind the scenes to the tools people use every day."
   },
   "notFound": {
     "title": "Page not found",
