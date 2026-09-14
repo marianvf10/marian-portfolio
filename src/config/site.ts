@@ -1,10 +1,9 @@
 // Single source of truth for identity/contact strings reused across Seo, Footer, Contact and JSON-LD.
-// TODO: replace the placeholder domain/GitHub/LinkedIn with your real ones before deploying.
 export const siteConfig = {
   name: 'Mariano Vergara',
   email: 'marianovf19@outlook.com',
-  domain: 'https://marianovergara.dev', // TODO: replace with the real deployed domain
-  github: 'https://github.com/TODO-your-github-username',
+  domain: 'https://marianovergara.dev',
+  github: 'https://github.com/marianvf10',
   linkedin: 'https://www.linkedin.com/in/marianovf/',
   cv: {
     en: '/cv/CV-Mariano-Vergara-EN.pdf',
