@@ -35,6 +35,33 @@
   margin-top: var(--space-7);
 }
 
+.video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.videoCaption {
+  margin-top: var(--space-3);
+  max-width: 65ch;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.demoRequest {
+  padding: var(--space-6);
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-bg);
+}
+
+.demoRequest .links {
+  margin-top: var(--space-5);
+}
+
 .block {
   margin-top: var(--space-7);
 }

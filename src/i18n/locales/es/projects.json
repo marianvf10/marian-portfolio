@@ -1,43 +1,93 @@
 {
-  "workshop-management-system": {
-    "name": "Sistema de Gestión de Taller",
-    "summary": "Una plataforma de gestión para un taller mecánico que administra vehículos particulares y corporativos, reemplazando las fichas de reparación en papel por un sistema digital centralizado.",
+  "dental-clinic-management-system": {
+    "name": "Sistema de Gestión Odontológica",
+    "summary": "Una aplicación web para un consultorio odontológico de Cipolletti que reemplazó un programa de escritorio hecho en Clarion: agenda para varios profesionales, recordatorios por WhatsApp, cuenta corriente, historia clínica y un tablero de indicadores, con la migración de todos los datos históricos.",
     "problem": {
       "heading": "El problema",
-      "body": "El taller registraba vehículos, historial de reparaciones y precios en papel, lo que hacía lento consultar trabajos anteriores, inconsistente presupuestar reparaciones y difícil ver el rendimiento del negocio. El objetivo fue reemplazar ese proceso por una plataforma digital centralizada."
+      "body": "El consultorio gestionaba pacientes, turnos y cobros con un programa de escritorio en Clarion instalado en una sola PC de recepción. Los odontólogos no podían ver su agenda desde otro equipo, los respaldos se hacían copiando carpetas a mano, no existían recordatorios para reducir las ausencias y no había forma de ver indicadores como el ausentismo o lo cobrado por mes. Además, los datos estaban en archivos TopSpeed con un formato propio: turnos y pagos vinculados al paciente por DNI en lugar de un identificador, horas guardadas como enteros y horarios repartidos en 28 columnas. El objetivo fue reemplazarlo por un sistema web multiusuario sin perder la historia del consultorio."
     },
     "architecture": {
       "heading": "Arquitectura",
-      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Vue Router para la navegación, Vuetify como capa de UI) que consume una API REST construida con LoopBack 4, que centraliza los registros de vehículos, el historial de reparaciones y las reglas de precios en la base de datos."
+      "body": "Una aplicación de página única en React y TypeScript (Vite, Tailwind CSS con shadcn/ui, Zustand para el estado y Recharts para los gráficos) que consume una API REST construida con NestJS y TypeORM sobre MySQL, organizada en módulos por dominio: pacientes, turnos, cuenta corriente, historia clínica, catálogos y usuarios. El mismo servidor entrega la web y la API, lo que simplifica la instalación en el consultorio y evita configurar CORS. El front mantiene una copia de los datos en memoria para que las pantallas respondan al instante y la sincroniza con el servidor cada minuto; toda escritura pasa primero por la API, así que en pantalla solo aparece lo que el servidor confirmó. La autenticación usa un token de acceso de corta duración en memoria y un refresh token rotativo en una cookie HttpOnly, con roles validados en cada endpoint."
     },
     "features": {
       "heading": "Funcionalidades principales",
       "items": [
-        "Gestión de vehículos particulares y corporativos",
-        "Historial completo de reparaciones por vehículo",
-        "Dashboard con indicadores del taller",
-        "Precios estimados por categoría de reparación",
-        "Precios estimados por marca de vehículo",
-        "Tablas de precios editables para el personal del taller"
+        "Agenda diaria y semanal para varios profesionales, con sobreturnos, cirugías diferenciadas y rechazo de turnos superpuestos desde el servidor",
+        "Recordatorios por WhatsApp sin costo: lista diaria de a quién avisar (2 días y 1 día antes), mensaje armado con un clic y constancia de quién avisó",
+        "Vista \"Mi día\" para cada odontólogo: turnos de hoy, pacientes nuevos, confirmaciones y saldos pendientes",
+        "Ficha del paciente con historia clínica en un editor de texto con formato y control de versiones, para que dos personas no se pisen los cambios",
+        "Cuenta corriente con cargos, pagos, medio de pago y saldo por paciente, con importes guardados en centavos enteros",
+        "Tablero con ausentismo, turnos y cobros por mes, pacientes por obra social y demanda por día de la semana",
+        "Roles para administración, odontólogos y recepción, con permisos aplicados en la API y no solo en el menú",
+        "Script de migración transaccional desde el sistema anterior y respaldos automáticos diarios de la base"
       ]
     },
     "challenges": {
       "heading": "Desafíos",
-      "body": "El desafío principal fue diseñar un esquema de precios flexible: el taller necesitaba estimar el costo de una reparación combinando la categoría del trabajo y la marca del vehículo, con tablas que el propio personal pudiera editar sin tocar código. Esto llevó a modelar los precios como reglas configurables en la base de datos en lugar de valores fijos, y a separar claramente los datos de vehículos particulares de los corporativos, que tienen necesidades de seguimiento distintas."
+      "body": "El desafío principal fue la migración. Los datos estaban en archivos TopSpeed (el motor de Clarion) y había que entender su formato antes de poder moverlos: la hora de los turnos era un entero en centésimas de segundo, la cuenta corriente y los turnos apuntaban al DNI del paciente (con fichas que tenían documento \"0\") y las prestaciones eran texto libre en Windows-1252. Lo resolví con un script de importación que corre en una única transacción —todo o nada—, se niega a duplicar datos si la base ya tiene información y deja un informe de los registros que hay que revisar a mano, complementado con una pantalla de \"fichas incompletas\" para que recepción corrija lo heredado. En el sistema nuevo, el otro punto delicado fue la concurrencia entre puestos: la API rechaza dos turnos en el mismo horario aunque se carguen a la vez desde dos computadoras, y la historia clínica se guarda contra una versión para que una edición nunca sobrescriba otra."
     },
     "lessonsLearned": {
       "heading": "Aprendizajes",
-      "body": "Este proyecto reforzó la importancia de anticipar qué partes de un sistema van a cambiar con frecuencia —como los precios— y diseñarlas como datos configurables desde el principio en lugar de hardcodearlas. También confirmó mi interés por el backend: modelar correctamente las relaciones entre vehículos, reparaciones y precios terminó siendo más determinante para el éxito del sistema que la interfaz en sí."
+      "body": "Reemplazar un sistema que ya funciona exige respetar sus datos más que su diseño: entender exactamente cómo guardaba la información el programa anterior fue lo que hizo posible migrar sin perder la historia del consultorio. También confirmé el valor de algunas decisiones simples tomadas desde el principio, como guardar los importes en centavos enteros para evitar errores de redondeo o validar los permisos en el servidor y no solo en la interfaz. Por último, armar una demo con datos ficticios que replica las reglas de la API real me obligó a documentar con precisión cómo se comporta cada endpoint."
+    },
+    "videoCaption": "Recorrido de un minuto y medio con datos ficticios: recepción agenda un turno y registra un aviso por WhatsApp, la odontóloga revisa su día y escribe en la historia clínica, y administración consulta el tablero.",
+    "screenshots": [
+      "Tablero con ausentismo, turnos y cobros por mes",
+      "Agenda semanal de todos los profesionales",
+      "Vista \"Mi día\" del odontólogo",
+      "Ficha del paciente con historia clínica, cuenta corriente y turnos",
+      "Recordatorios de turnos por WhatsApp",
+      "Formulario para agendar un turno con aviso de sobreturno",
+      "Cuenta corriente con cargos, pagos y saldos",
+      "Listado de pacientes con búsqueda y filtros",
+      "Configuración de horarios, usuarios y roles"
+    ]
+  },
+  "insurance-appraisal-platform": {
+    "name": "Plataforma de Peritajes de Seguros",
+    "summary": "Una plataforma de gestión para un estudio de peritajes de seguros que maneja dos tipos de siniestro distintos —siniestros laborales y pericias mecánicas vehiculares— con extracción de documentos asistida por IA, un checklist antifraude y alertas automáticas de vencimiento.",
+    "problem": {
+      "heading": "El problema",
+      "body": "El estudio recibe casos derivados por aseguradoras y ART en dos líneas de negocio con plazos, documentación y criterios legales distintos. Hacer seguimiento de ambas desde planillas hacía fácil perder de vista un caso próximo a su vencimiento legal, y dejaba la redacción de informes como un paso totalmente manual y propenso a errores. El objetivo fue una única plataforma capaz de manejar ambas líneas sin forzar una dentro del modelo de datos de la otra, ayudando además a los inspectores a detectar posible fraude y a no perder ningún vencimiento."
+    },
+    "architecture": {
+      "heading": "Arquitectura",
+      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Pinia, TanStack Query) que consume una API REST construida con NestJS y TypeORM sobre MySQL. Los dos tipos de siniestro se modelan como módulos independientes: los siniestros laborales tienen un grafo de entidades más rico —trabajador, empleador, ruta in itinere, lesión, relatos de testigos— mientras que las pericias mecánicas reflejan en espejo los datos del asegurado y del tercero; ambos comparten bloques comunes para archivos, usuarios y generación de documentos. Tareas programadas corren de forma independiente a la actividad de los usuarios para mantener al día los casos de ambas líneas. La base visual del frontend (componentes, layout, paleta) es deliberadamente la misma que usé en la Plataforma de Gestión de Siniestros: son dos estudios de peritajes con necesidades de interfaz casi idénticas, así que reutilizar esa UI dejó más tiempo para el diseño del backend, que es donde está el trabajo de ingeniería real de estos proyectos y donde más disfruto trabajar."
+    },
+    "features": {
+      "heading": "Funcionalidades principales",
+      "items": [
+        "Gestión de casos para dos líneas de seguros: siniestros laborales y pericias mecánicas vehiculares",
+        "Extracción de datos estructurados asistida por IA desde los PDF de denuncia, con un prompt distinto para cada tipo de siniestro",
+        "Checklist antifraude y relatos estructurados —accidentado, empleador, testigo— para los informes de siniestros laborales",
+        "Alertas automáticas de vencimiento: una tarea programada revisa los casos abiertos cada pocas horas y notifica por mail a administradores e inspector asignado antes de que un caso venza",
+        "Generación automática de carátulas en PDF e informes en Word, además de exportación a Excel filtrada por aseguradora y rango de fechas",
+        "Control de acceso por rol para administradores e inspectores, con JWT y refresh tokens"
+      ]
+    },
+    "challenges": {
+      "heading": "Desafíos",
+      "body": "Encajar dos tipos de siniestro genuinamente distintos en una sola plataforma sin forzarlos a compartir una forma común fue el principal problema de diseño: en lugar de una entidad de caso genérica, cada línea tiene su propio módulo y su propio grafo de entidades, compartiendo solo lo que realmente era común, como archivos, usuarios y generadores de documentos. Mantener confiable la tarea de alertas de vencimiento fue un problema menor pero fácil de resolver mal: sin un flag que registrara que una alerta ya había sido enviada, una tarea que corre cada pocas horas habría vuelto a notificar a los administradores en cada ejecución, por lo que cada tipo de alerta se rastrea explícitamente para dispararse una única vez por caso."
+    },
+    "lessonsLearned": {
+      "heading": "Aprendizajes",
+      "body": "Resistir la tentación de unificar dos dominios distintos bajo una entidad genérica valió la pena: los siniestros laborales y los vehiculares genuinamente no comparten una forma, y forzarlos en una sola tabla hubiera significado columnas nullable por todos lados y lógica de negocio llena de chequeos de tipo. También fue un buen aprendizaje sobre tratar a las tareas programadas como una parte de primera clase del diseño: la idempotencia hay que planificarla desde el principio, no parchearla después del primer reclamo por una alerta duplicada."
     },
     "screenshots": [
-      "Dashboard con indicadores del taller",
-      "Formulario de alta de un nuevo arreglo para vehículo particular",
-      "Listado de arreglos de vehículos particulares",
-      "Formulario de alta de un nuevo arreglo para vehículo de empresa",
-      "Listado de arreglos de vehículos de empresas",
-      "Listado de marcas de vehículos",
-      "Listado de vehículos particulares",
-      "Listado de vehículos de empresas"
+      "Pantalla de inicio de sesión",
+      "Listado de siniestros laborales (ART)",
+      "Detalle de siniestro laboral",
+      "Detalle de siniestro laboral: informe y conclusiones",
+      "Detalle de siniestro laboral: documentación y fotos",
+      "Checklist antifraude",
+      "Notificación al inspector asignado",
+      "Alta de siniestro con extracción de datos asistida por IA",
+      "Listado de pericias mecánicas vehiculares",
+      "Detalle de pericia mecánica vehicular",
+      "Gestión de aseguradoras",
+      "Gestión de usuarios",
+      "Modo oscuro"
     ]
   },
   "claims-management-platform": {
@@ -87,50 +137,45 @@
       "Portal público de carga: paso 2, documentación"
     ]
   },
-  "insurance-appraisal-platform": {
-    "name": "Plataforma de Peritajes de Seguros",
-    "summary": "Una plataforma de gestión para un estudio de peritajes de seguros que maneja dos tipos de siniestro distintos —siniestros laborales y pericias mecánicas vehiculares— con extracción de documentos asistida por IA, un checklist antifraude y alertas automáticas de vencimiento.",
+  "workshop-management-system": {
+    "name": "Sistema de Gestión de Taller",
+    "summary": "Una plataforma de gestión para un taller mecánico que administra vehículos particulares y corporativos, reemplazando las fichas de reparación en papel por un sistema digital centralizado.",
     "problem": {
       "heading": "El problema",
-      "body": "El estudio recibe casos derivados por aseguradoras y ART en dos líneas de negocio con plazos, documentación y criterios legales distintos. Hacer seguimiento de ambas desde planillas hacía fácil perder de vista un caso próximo a su vencimiento legal, y dejaba la redacción de informes como un paso totalmente manual y propenso a errores. El objetivo fue una única plataforma capaz de manejar ambas líneas sin forzar una dentro del modelo de datos de la otra, ayudando además a los inspectores a detectar posible fraude y a no perder ningún vencimiento."
+      "body": "El taller registraba vehículos, historial de reparaciones y precios en papel, lo que hacía lento consultar trabajos anteriores, inconsistente presupuestar reparaciones y difícil ver el rendimiento del negocio. El objetivo fue reemplazar ese proceso por una plataforma digital centralizada."
     },
     "architecture": {
       "heading": "Arquitectura",
-      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Pinia, TanStack Query) que consume una API REST construida con NestJS y TypeORM sobre MySQL. Los dos tipos de siniestro se modelan como módulos independientes: los siniestros laborales tienen un grafo de entidades más rico —trabajador, empleador, ruta in itinere, lesión, relatos de testigos— mientras que las pericias mecánicas reflejan en espejo los datos del asegurado y del tercero; ambos comparten bloques comunes para archivos, usuarios y generación de documentos. Tareas programadas corren de forma independiente a la actividad de los usuarios para mantener al día los casos de ambas líneas. La base visual del frontend (componentes, layout, paleta) es deliberadamente la misma que usé en la Plataforma de Gestión de Siniestros: son dos estudios de peritajes con necesidades de interfaz casi idénticas, así que reutilizar esa UI dejó más tiempo para el diseño del backend, que es donde está el trabajo de ingeniería real de estos proyectos y donde más disfruto trabajar."
+      "body": "Una arquitectura desacoplada con una aplicación de página única en Vue 3 (Vue Router para la navegación, Vuetify como capa de UI) que consume una API REST construida con LoopBack 4, que centraliza los registros de vehículos, el historial de reparaciones y las reglas de precios en la base de datos."
     },
     "features": {
       "heading": "Funcionalidades principales",
       "items": [
-        "Gestión de casos para dos líneas de seguros: siniestros laborales y pericias mecánicas vehiculares",
-        "Extracción de datos estructurados asistida por IA desde los PDF de denuncia, con un prompt distinto para cada tipo de siniestro",
-        "Checklist antifraude y relatos estructurados —accidentado, empleador, testigo— para los informes de siniestros laborales",
-        "Alertas automáticas de vencimiento: una tarea programada revisa los casos abiertos cada pocas horas y notifica por mail a administradores e inspector asignado antes de que un caso venza",
-        "Generación automática de carátulas en PDF e informes en Word, además de exportación a Excel filtrada por aseguradora y rango de fechas",
-        "Control de acceso por rol para administradores e inspectores, con JWT y refresh tokens"
+        "Gestión de vehículos particulares y corporativos",
+        "Historial completo de reparaciones por vehículo",
+        "Dashboard con indicadores del taller",
+        "Precios estimados por categoría de reparación",
+        "Precios estimados por marca de vehículo",
+        "Tablas de precios editables para el personal del taller"
       ]
     },
     "challenges": {
       "heading": "Desafíos",
-      "body": "Encajar dos tipos de siniestro genuinamente distintos en una sola plataforma sin forzarlos a compartir una forma común fue el principal problema de diseño: en lugar de una entidad de caso genérica, cada línea tiene su propio módulo y su propio grafo de entidades, compartiendo solo lo que realmente era común, como archivos, usuarios y generadores de documentos. Mantener confiable la tarea de alertas de vencimiento fue un problema menor pero fácil de resolver mal: sin un flag que registrara que una alerta ya había sido enviada, una tarea que corre cada pocas horas habría vuelto a notificar a los administradores en cada ejecución, por lo que cada tipo de alerta se rastrea explícitamente para dispararse una única vez por caso."
+      "body": "El desafío principal fue diseñar un esquema de precios flexible: el taller necesitaba estimar el costo de una reparación combinando la categoría del trabajo y la marca del vehículo, con tablas que el propio personal pudiera editar sin tocar código. Esto llevó a modelar los precios como reglas configurables en la base de datos en lugar de valores fijos, y a separar claramente los datos de vehículos particulares de los corporativos, que tienen necesidades de seguimiento distintas."
     },
     "lessonsLearned": {
       "heading": "Aprendizajes",
-      "body": "Resistir la tentación de unificar dos dominios distintos bajo una entidad genérica valió la pena: los siniestros laborales y los vehiculares genuinamente no comparten una forma, y forzarlos en una sola tabla hubiera significado columnas nullable por todos lados y lógica de negocio llena de chequeos de tipo. También fue un buen aprendizaje sobre tratar a las tareas programadas como una parte de primera clase del diseño: la idempotencia hay que planificarla desde el principio, no parchearla después del primer reclamo por una alerta duplicada."
+      "body": "Este proyecto reforzó la importancia de anticipar qué partes de un sistema van a cambiar con frecuencia —como los precios— y diseñarlas como datos configurables desde el principio en lugar de hardcodearlas. También confirmó mi interés por el backend: modelar correctamente las relaciones entre vehículos, reparaciones y precios terminó siendo más determinante para el éxito del sistema que la interfaz en sí."
     },
     "screenshots": [
-      "Pantalla de inicio de sesión",
-      "Listado de siniestros laborales (ART)",
-      "Detalle de siniestro laboral",
-      "Detalle de siniestro laboral: informe y conclusiones",
-      "Detalle de siniestro laboral: documentación y fotos",
-      "Checklist antifraude",
-      "Notificación al inspector asignado",
-      "Alta de siniestro con extracción de datos asistida por IA",
-      "Listado de pericias mecánicas vehiculares",
-      "Detalle de pericia mecánica vehicular",
-      "Gestión de aseguradoras",
-      "Gestión de usuarios",
-      "Modo oscuro"
+      "Dashboard con indicadores del taller",
+      "Formulario de alta de un nuevo arreglo para vehículo particular",
+      "Listado de arreglos de vehículos particulares",
+      "Formulario de alta de un nuevo arreglo para vehículo de empresa",
+      "Listado de arreglos de vehículos de empresas",
+      "Listado de marcas de vehículos",
+      "Listado de vehículos particulares",
+      "Listado de vehículos de empresas"
     ]
   }
 }
