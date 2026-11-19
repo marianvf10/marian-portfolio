@@ -78,6 +78,46 @@ export function ProjectDetailPage() {
         <ImagePlaceholder label={name} className={styles.image} />
       )}
 
+      {project.video && (
+        <section className={styles.block}>
+          <h2 className={styles.blockHeading}>{tCommon('projectVideo.heading')}</h2>
+          {/* preload="none": the file is only downloaded when the visitor presses play, so it doesn't affect page load */}
+          <video
+            className={styles.video}
+            src={`/videos/projects/${project.slug}/${project.video.file}`}
+            poster={`/videos/projects/${project.slug}/${project.video.poster}`}
+            controls
+            muted
+            playsInline
+            preload="none"
+            aria-describedby="project-video-caption"
+          />
+          <p id="project-video-caption" className={styles.videoCaption}>
+            {tProjects(`${slug}.videoCaption`)}
+          </p>
+        </section>
+      )}
+
+      {project.demoOnRequest && (
+        <section className={`${styles.block} ${styles.demoRequest}`}>
+          <h2 className={styles.blockHeading}>{tCommon('demoRequest.heading')}</h2>
+          <p className={styles.blockBody}>{tCommon('demoRequest.body')}</p>
+          <div className={styles.links}>
+            <Button
+              href={`https://wa.me/${siteConfig.whatsapp.phone}?text=${encodeURIComponent(tCommon('demoRequest.message', { project: name }))}`}
+            >
+              {tCommon('demoRequest.whatsapp')}
+            </Button>
+            <Button
+              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(tCommon('demoRequest.subject', { project: name }))}&body=${encodeURIComponent(tCommon('demoRequest.message', { project: name }))}`}
+              variant="secondary"
+            >
+              {tCommon('demoRequest.email')}
+            </Button>
+          </div>
+        </section>
+      )}
+
       <section className={styles.block}>
         <h2 className={styles.blockHeading}>{problem.heading}</h2>
         <p className={styles.blockBody}>{problem.body}</p>

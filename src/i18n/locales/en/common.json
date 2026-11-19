@@ -35,6 +35,17 @@
     "goTo": "Go to image {{position}}",
     "counter": "{{current}} of {{total}}"
   },
+  "projectVideo": {
+    "heading": "Demo video"
+  },
+  "demoRequest": {
+    "heading": "Want to try the demo?",
+    "body": "There is an interactive demo of the system with fictitious data, where you can sign in as administration, dentist or front desk, book appointments and record payments. Get in touch and I will send you access.",
+    "whatsapp": "Request the demo on WhatsApp",
+    "email": "Request the demo by email",
+    "subject": "Demo: {{project}}",
+    "message": "Hi Mariano, I saw the {{project}} in your portfolio and would like to try the demo."
+  },
   "footer": {
     "rights": "© {{year}} Mariano Vergara. All rights reserved."
   },

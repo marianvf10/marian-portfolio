@@ -1,43 +1,93 @@
 {
-  "workshop-management-system": {
-    "name": "Workshop Management System",
-    "summary": "A management platform for a mechanical workshop that handles both private and corporate vehicles, replacing paper-based repair records with a centralized digital system.",
+  "dental-clinic-management-system": {
+    "name": "Dental Clinic Management System",
+    "summary": "A web application for a dental clinic in Cipolletti, Argentina, that replaced a Clarion desktop program: a multi-dentist schedule, WhatsApp appointment reminders, patient accounts, clinical records and a metrics dashboard, along with the migration of all historical data.",
     "problem": {
       "heading": "The problem",
-      "body": "The workshop tracked vehicles, repair history and pricing on paper, making it slow to look up past work, inconsistent to quote repairs, and hard to see how the business was performing. The goal was to replace that process with a single, centralized digital platform."
+      "body": "The clinic managed patients, appointments and payments with a Clarion desktop program installed on a single front-desk PC. Dentists could not see their schedule from any other computer, backups were made by copying folders by hand, there were no reminders to reduce no-shows and no way to see metrics such as the no-show rate or monthly revenue. On top of that, the data lived in TopSpeed files with their own format: appointments and payments were linked to patients by national ID number instead of an identifier, times were stored as integers and working hours were spread across 28 columns. The goal was to replace it with a multi-user web system without losing the clinic's history."
     },
     "architecture": {
       "heading": "Architecture",
-      "body": "A decoupled architecture with a Vue 3 single-page application (Vue Router for navigation, Vuetify for the UI layer) consuming a REST API built with LoopBack 4, which centralizes vehicle records, repair history and pricing rules in the database."
+      "body": "A single-page application in React and TypeScript (Vite, Tailwind CSS with shadcn/ui, Zustand for state and Recharts for charts) that consumes a REST API built with NestJS and TypeORM on MySQL, organized into domain modules: patients, appointments, patient accounts, clinical records, catalogs and users. The same server delivers both the web app and the API, which keeps installation at the clinic simple and avoids configuring CORS. The frontend keeps an in-memory copy of the data so screens respond instantly, and syncs it with the server every minute; every write goes through the API first, so the screen only shows what the server confirmed. Authentication uses a short-lived access token kept in memory and a rotating refresh token in an HttpOnly cookie, with roles enforced on every endpoint."
     },
     "features": {
       "heading": "Key features",
       "items": [
-        "Vehicle management for both private and corporate clients",
-        "Full repair history per vehicle",
-        "Dashboard with workshop indicators",
-        "Estimated pricing by repair category",
-        "Estimated pricing by vehicle brand",
-        "Editable pricing tables for the workshop staff"
+        "Daily and weekly schedule for several dentists, with overbooking, highlighted surgeries and overlapping appointments rejected by the server",
+        "Free WhatsApp reminders: a daily list of whom to notify (2 days and 1 day before), a ready-made message in one click and a record of who sent it",
+        "\"My day\" view for each dentist: today's appointments, new patients, confirmations and outstanding balances",
+        "Patient file with clinical records in a rich-text editor and version control, so two people never overwrite each other's changes",
+        "Patient accounts with charges, payments, payment method and balance per patient, with amounts stored as integer cents",
+        "Dashboard with no-show rate, appointments and revenue per month, patients per health insurer and demand by weekday",
+        "Roles for administration, dentists and front desk, with permissions enforced by the API, not just the menu",
+        "Transactional migration script from the previous system and automated daily database backups"
       ]
     },
     "challenges": {
       "heading": "Challenges",
-      "body": "The main challenge was designing a flexible pricing scheme: the workshop needed to estimate a repair's cost by combining the job category with the vehicle's brand, with tables the staff themselves could edit without touching code. That led to modeling pricing as configurable rules in the database instead of fixed values, and to clearly separating private vehicle data from corporate data, which has different tracking needs."
+      "body": "The main challenge was the migration. The data was stored in TopSpeed files (Clarion's database engine) and their format had to be understood before it could be moved: appointment times were integers in hundredths of a second, payments and appointments pointed to the patient's national ID (with some records holding \"0\" as their ID) and treatments were free text in Windows-1252. I solved it with an import script that runs in a single transaction —all or nothing—, refuses to duplicate data if the database already has records and produces a report of the rows that need manual review, complemented by an \"incomplete records\" screen so the front desk can fix inherited data. In the new system, the other delicate point was concurrency between workstations: the API rejects two appointments in the same slot even when they are booked at the same time from two computers, and clinical records are saved against a version so one edit never overwrites another."
     },
     "lessonsLearned": {
       "heading": "Lessons learned",
-      "body": "This project reinforced the value of anticipating which parts of a system change often — like pricing — and designing them as configurable data from the start instead of hardcoding them. It also confirmed my interest in backend work: correctly modeling the relationships between vehicles, repairs and pricing ended up mattering more to the system's success than the interface itself."
+      "body": "Replacing a system that already works means respecting its data more than its design: understanding exactly how the previous program stored information is what made it possible to migrate without losing the clinic's history. It also confirmed the value of a few simple decisions made from day one, such as storing amounts as integer cents to avoid rounding errors and enforcing permissions on the server rather than only in the interface. Finally, building a demo with fictitious data that mirrors the real API's rules forced me to document precisely how every endpoint behaves."
+    },
+    "videoCaption": "A minute-and-a-half walkthrough with fictitious data: the front desk books an appointment and logs a WhatsApp reminder, the dentist reviews her day and writes in a clinical record, and administration checks the dashboard.",
+    "screenshots": [
+      "Dashboard with no-show rate, appointments and revenue per month",
+      "Weekly schedule for all dentists",
+      "Dentist's \"My day\" view",
+      "Patient file with clinical record, account and appointments",
+      "WhatsApp appointment reminders",
+      "Appointment booking form with overbooking warning",
+      "Patient accounts with charges, payments and balances",
+      "Patient list with search and filters",
+      "Settings for working hours, users and roles"
+    ]
+  },
+  "insurance-appraisal-platform": {
+    "name": "Insurance Appraisal Platform",
+    "summary": "A management platform for an insurance expert-appraisal firm that handles two distinct claim types — workplace-accident claims and vehicle appraisal claims — with AI-assisted document extraction, an anti-fraud checklist and automated deadline alerts.",
+    "problem": {
+      "heading": "The problem",
+      "body": "The firm receives cases referred by insurers and workers'-compensation providers across two lines of business with different deadlines, documentation and legal criteria. Tracking both from spreadsheets made it easy to miss a case approaching its statutory deadline and left report writing as a fully manual, error-prone step. The goal was a single platform that could handle both lines without forcing one into the other's data model, while helping inspectors flag potential fraud and never miss a deadline."
+    },
+    "architecture": {
+      "heading": "Architecture",
+      "body": "A decoupled architecture with a Vue 3 single-page application (Pinia, TanStack Query) consuming a REST API built with NestJS and TypeORM over MySQL. The two claim types are modeled as independent modules: workplace-accident claims have a rich sub-graph of entities — worker, employer, commute route, injury, witness statements — while vehicle appraisal claims mirror insured and third-party data side by side; both share common building blocks for files, users and document generation. Scheduled jobs run independently of user activity to keep cases in both lines on track. The frontend's visual foundation (components, layout, palette) deliberately reuses what I built for the Claims Management Platform: both are appraisal-firm systems with nearly identical interface needs, so reusing that UI left more time for backend design, which is where the real engineering work in these projects lives and where I enjoy working most."
+    },
+    "features": {
+      "heading": "Key features",
+      "items": [
+        "Case management for two insurance lines: workplace-accident claims and vehicle appraisal claims",
+        "AI-assisted extraction of structured data from claim PDFs, with a different prompt per claim type",
+        "Anti-fraud checklist and structured statements — accident victim, employer, witness — for workplace-accident reports",
+        "Automated deadline alerts: a scheduled job checks open cases every few hours and emails admins and the assigned inspector before a case is overdue",
+        "Automatic generation of PDF cover sheets and Word reports, plus Excel exports filtered by insurer and date range",
+        "Role-based access control for admins and inspectors, with JWT and refresh tokens"
+      ]
+    },
+    "challenges": {
+      "heading": "Challenges",
+      "body": "Fitting two genuinely different claim types into one platform without forcing a shared shape onto them was the main design problem: instead of one generic case entity, each line got its own module and entity graph, sharing only what was actually common, such as files, users and document builders. Keeping the deadline-alert job reliable was a smaller but easy-to-get-wrong problem — without a flag recording that an alert had already been sent, a job running every few hours would have re-notified admins on every run, so each alert type is tracked explicitly to fire exactly once per case."
+    },
+    "lessonsLearned": {
+      "heading": "Lessons learned",
+      "body": "Resisting the urge to unify two different domains under one generic entity paid off: workplace-accident and vehicle claims genuinely don't share a shape, and forcing them into a single table would have meant nullable columns everywhere and business logic full of type checks. It was also a good lesson in treating scheduled jobs as a first-class part of the design — idempotency has to be planned for from the start, not patched in after the first duplicate-alert complaint."
     },
     "screenshots": [
-      "Dashboard with workshop indicators",
-      "Form for creating a new repair for a private vehicle",
-      "List of repairs for private vehicles",
-      "Form for creating a new repair for a company vehicle",
-      "List of repairs for company vehicles",
-      "List of vehicle brands",
-      "List of private vehicles",
-      "List of company vehicles"
+      "Login screen",
+      "List of workplace-accident claims (ART)",
+      "Workplace-accident claim detail",
+      "Workplace-accident claim detail: report and conclusions",
+      "Workplace-accident claim detail: documentation and photos",
+      "Anti-fraud checklist",
+      "Notifying the assigned inspector",
+      "New claim intake with AI-assisted data extraction",
+      "List of vehicle appraisal claims",
+      "Vehicle appraisal claim detail",
+      "Insurer management",
+      "User management",
+      "Dark mode"
     ]
   },
   "claims-management-platform": {
@@ -87,50 +137,45 @@
       "Public intake portal: step 2, documentation"
     ]
   },
-  "insurance-appraisal-platform": {
-    "name": "Insurance Appraisal Platform",
-    "summary": "A management platform for an insurance expert-appraisal firm that handles two distinct claim types — workplace-accident claims and vehicle appraisal claims — with AI-assisted document extraction, an anti-fraud checklist and automated deadline alerts.",
+  "workshop-management-system": {
+    "name": "Workshop Management System",
+    "summary": "A management platform for a mechanical workshop that handles both private and corporate vehicles, replacing paper-based repair records with a centralized digital system.",
     "problem": {
       "heading": "The problem",
-      "body": "The firm receives cases referred by insurers and workers'-compensation providers across two lines of business with different deadlines, documentation and legal criteria. Tracking both from spreadsheets made it easy to miss a case approaching its statutory deadline and left report writing as a fully manual, error-prone step. The goal was a single platform that could handle both lines without forcing one into the other's data model, while helping inspectors flag potential fraud and never miss a deadline."
+      "body": "The workshop tracked vehicles, repair history and pricing on paper, making it slow to look up past work, inconsistent to quote repairs, and hard to see how the business was performing. The goal was to replace that process with a single, centralized digital platform."
     },
     "architecture": {
       "heading": "Architecture",
-      "body": "A decoupled architecture with a Vue 3 single-page application (Pinia, TanStack Query) consuming a REST API built with NestJS and TypeORM over MySQL. The two claim types are modeled as independent modules: workplace-accident claims have a rich sub-graph of entities — worker, employer, commute route, injury, witness statements — while vehicle appraisal claims mirror insured and third-party data side by side; both share common building blocks for files, users and document generation. Scheduled jobs run independently of user activity to keep cases in both lines on track. The frontend's visual foundation (components, layout, palette) deliberately reuses what I built for the Claims Management Platform: both are appraisal-firm systems with nearly identical interface needs, so reusing that UI left more time for backend design, which is where the real engineering work in these projects lives and where I enjoy working most."
+      "body": "A decoupled architecture with a Vue 3 single-page application (Vue Router for navigation, Vuetify for the UI layer) consuming a REST API built with LoopBack 4, which centralizes vehicle records, repair history and pricing rules in the database."
     },
     "features": {
       "heading": "Key features",
       "items": [
-        "Case management for two insurance lines: workplace-accident claims and vehicle appraisal claims",
-        "AI-assisted extraction of structured data from claim PDFs, with a different prompt per claim type",
-        "Anti-fraud checklist and structured statements — accident victim, employer, witness — for workplace-accident reports",
-        "Automated deadline alerts: a scheduled job checks open cases every few hours and emails admins and the assigned inspector before a case is overdue",
-        "Automatic generation of PDF cover sheets and Word reports, plus Excel exports filtered by insurer and date range",
-        "Role-based access control for admins and inspectors, with JWT and refresh tokens"
+        "Vehicle management for both private and corporate clients",
+        "Full repair history per vehicle",
+        "Dashboard with workshop indicators",
+        "Estimated pricing by repair category",
+        "Estimated pricing by vehicle brand",
+        "Editable pricing tables for the workshop staff"
       ]
     },
     "challenges": {
       "heading": "Challenges",
-      "body": "Fitting two genuinely different claim types into one platform without forcing a shared shape onto them was the main design problem: instead of one generic case entity, each line got its own module and entity graph, sharing only what was actually common, such as files, users and document builders. Keeping the deadline-alert job reliable was a smaller but easy-to-get-wrong problem — without a flag recording that an alert had already been sent, a job running every few hours would have re-notified admins on every run, so each alert type is tracked explicitly to fire exactly once per case."
+      "body": "The main challenge was designing a flexible pricing scheme: the workshop needed to estimate a repair's cost by combining the job category with the vehicle's brand, with tables the staff themselves could edit without touching code. That led to modeling pricing as configurable rules in the database instead of fixed values, and to clearly separating private vehicle data from corporate data, which has different tracking needs."
     },
     "lessonsLearned": {
       "heading": "Lessons learned",
-      "body": "Resisting the urge to unify two different domains under one generic entity paid off: workplace-accident and vehicle claims genuinely don't share a shape, and forcing them into a single table would have meant nullable columns everywhere and business logic full of type checks. It was also a good lesson in treating scheduled jobs as a first-class part of the design — idempotency has to be planned for from the start, not patched in after the first duplicate-alert complaint."
+      "body": "This project reinforced the value of anticipating which parts of a system change often — like pricing — and designing them as configurable data from the start instead of hardcoding them. It also confirmed my interest in backend work: correctly modeling the relationships between vehicles, repairs and pricing ended up mattering more to the system's success than the interface itself."
     },
     "screenshots": [
-      "Login screen",
-      "List of workplace-accident claims (ART)",
-      "Workplace-accident claim detail",
-      "Workplace-accident claim detail: report and conclusions",
-      "Workplace-accident claim detail: documentation and photos",
-      "Anti-fraud checklist",
-      "Notifying the assigned inspector",
-      "New claim intake with AI-assisted data extraction",
-      "List of vehicle appraisal claims",
-      "Vehicle appraisal claim detail",
-      "Insurer management",
-      "User management",
-      "Dark mode"
+      "Dashboard with workshop indicators",
+      "Form for creating a new repair for a private vehicle",
+      "List of repairs for private vehicles",
+      "Form for creating a new repair for a company vehicle",
+      "List of repairs for company vehicles",
+      "List of vehicle brands",
+      "List of private vehicles",
+      "List of company vehicles"
     ]
   }
 }

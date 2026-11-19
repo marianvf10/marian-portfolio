@@ -6,6 +6,21 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://marianovergara.dev/projects/dental-clinic-management-system</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://marianovergara.dev/projects/insurance-appraisal-platform</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://marianovergara.dev/projects/claims-management-platform</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://marianovergara.dev/projects/workshop-management-system</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
