@@ -2,7 +2,7 @@
   "hero": {
     "eyebrow": "Hi, my name is",
     "tagline": "I build backend systems that power real products.",
-    "description": "I design REST APIs, model databases, and take applications to production on real Linux servers. I care about understanding how a system works underneath, not just making it run, and I'm looking for projects where I can keep going deeper into backend and systems architecture.",
+    "description": "I design REST APIs, model databases, and take applications to production on real Linux servers. I care about the architecture, performance, and business model behind every system, and I'm available for freelance projects of any scale: management systems, software products, landing pages, or institutional sites.",
     "ctaPrimary": "View my work",
     "ctaSecondary": "Get in touch"
   },
